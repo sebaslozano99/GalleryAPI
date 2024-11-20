@@ -1,0 +1,25 @@
+{
+  "name": "galleryapi",
+  "version": "1.0.0",
+  "description": "simple gallery api to practice Express js",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon index.js"
+  },
+  "keywords": [
+    "crud",
+    "api",
+    "multer",
+    "mvc"
+  ],
+  "author": "sebastian lozano",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.21.1",
+    "mysql2": "^3.11.4"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.7"
+  }
+}
