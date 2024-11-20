@@ -1,4 +1,5 @@
 const express = require("express");
+const cors = require("cors");
 const galleryRoute = require("./routes/galleryRoutes.js");
 
 
@@ -10,6 +11,8 @@ const app = express();
 
 
 //MIDDLEWARES
+app.use(express.static("uploads"));
+app.use(cors());
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
 

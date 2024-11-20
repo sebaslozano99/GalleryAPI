@@ -5,10 +5,8 @@ const database = require("../config/database.js");
 // GET request
 const showGallery = async (req, res, next) => {
 
-    const { user_id } = req.body;
-
     try{
-        const [rows] = await database.execute("SELECT * FROM gallery WHERE user_id = ?", [user_id]);
+        const [rows] = await database.execute("SELECT * FROM gallery WHERE user_id = ?", [1]);
         res.status(200).json(rows);
     }
     catch(error){
@@ -22,11 +20,15 @@ const showGallery = async (req, res, next) => {
 // POST request --
 const postOneImage = async (req, res, next) => {
 
-    const file = req.file;
-    console.log(file);
+    console.log("BODY: ", req.body);
+    console.log("FILE: ", req.file);
+    const { filename } = req.file;
+    const { user_id } = req.body;
 
     try{
-        res.send("Image uploaded!");
+        const [result] = await database.execute("INSERT INTO gallery (user_id, url_path) VALUES (?, ?)", [+user_id, filename]);
+        // console.log(result);
+        res.status(200).json({"message": "new photo added!"});
     }
     catch(error){
         console.error(error);
