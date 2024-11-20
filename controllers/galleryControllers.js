@@ -19,19 +19,24 @@ const showGallery = async (req, res, next) => {
 }
 
 
-// GET request -- show one image based on ID
-const showOneImage = (req, res, next) => {
-    res.send("One image");
-}
-
-
 // POST request --
-const postOneImage = (req, res, next) => {
-    res.send("Image uploaded successfully!");
+const postOneImage = async (req, res, next) => {
+
+    const file = req.file;
+    console.log(file);
+
+    try{
+        res.send("Image uploaded!");
+    }
+    catch(error){
+        console.error(error);
+        res.status(500).json({message: error.message || "Internal server error"});
+        next();
+    }
 }
 
 
 
 
 
-module.exports = { showGallery, showOneImage, postOneImage }
+module.exports = { showGallery, postOneImage }

@@ -1,5 +1,8 @@
 const express = require("express");
-const { showGallery, showOneImage, postOneImage } = require("../controllers/galleryControllers.js");
+const upload = require("../config/imageStorage.js");
+const { showGallery, postOneImage } = require("../controllers/galleryControllers.js");
+
+
 
 
 const galleryRoute = express.Router();
@@ -8,9 +11,9 @@ const galleryRoute = express.Router();
 
 galleryRoute.get("/gallery", showGallery);
 
-galleryRoute.get("/gallery/:id", showOneImage);
+// galleryRoute.get("/gallery/:id", showOneImage);
 
-galleryRoute.post("/gallery", postOneImage)
+galleryRoute.post("/gallery", upload.single("picture"), postOneImage)
 
 
 
