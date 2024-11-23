@@ -17,6 +17,27 @@ const showGallery = async (req, res, next) => {
 }
 
 
+
+
+// GET request
+const getSinglePicture = async (req, res, next) => {
+
+    const { pictureID } = req.params;
+
+    try{
+        const [rows] = await database.execute("SELECT * FROM gallery WHERE id = ?", [+pictureID]);
+        res.status(200).json(rows);
+    }
+    catch(error){
+        console.error(error);
+        res.status(500).json({message: error.message || "Internal server error"});
+        next();
+    }
+}
+
+
+
+
 // POST request --
 const postOneImage = async (req, res, next) => {
 
@@ -91,7 +112,6 @@ const deleteOneImage = async (req, res, next) => {
 
     const { pictureID } = req.params;
 
-
     try{
         //select row to be deleted and get the image file name
         const [rows] = await database.execute("SELECT url_path FROM gallery WHERE id = ?", [pictureID]);
@@ -121,4 +141,4 @@ const deleteOneImage = async (req, res, next) => {
 
 
 
-module.exports = { showGallery, postOneImage, deleteOneImage, updateImage }
+module.exports = { showGallery, getSinglePicture, postOneImage, deleteOneImage, updateImage }
