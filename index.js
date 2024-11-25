@@ -1,6 +1,8 @@
 const express = require("express");
 const cors = require("cors");
 const galleryRoute = require("./routes/galleryRoutes.js");
+const userRoute = require("./routes/userRoutes.js");
+
 
 
 const app = express();
@@ -19,7 +21,9 @@ app.use(express.static("uploads"));
 
 
 //ROUTES
+app.use("/api", userRoute);
 app.use("/api", galleryRoute);
+
 
 
 const PORT = 5000;
@@ -27,4 +31,4 @@ const PORT = 5000;
 
 app.listen(PORT, () => {
     console.log(`Listening to PORT ${PORT}`);
-})
+});
