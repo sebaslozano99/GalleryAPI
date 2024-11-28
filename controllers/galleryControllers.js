@@ -5,8 +5,13 @@ const fs = require("fs");
 // GET request
 const showGallery = async (req, res, next) => {
 
+    const { userID } = req.params;
+
     try{
-        const [rows] = await database.execute("SELECT * FROM gallery WHERE user_id = ?", [1]);
+        const [rows] = await database.execute("SELECT * FROM gallery WHERE user_id = ?", [userID]);
+
+        if(!rows.length) return res.status(404).json({message: `User with id ${userID} doesn't exist`});
+
         res.status(200).json(rows);
     }
     catch(error){
@@ -26,6 +31,11 @@ const getSinglePicture = async (req, res, next) => {
 
     try{
         const [rows] = await database.execute("SELECT * FROM gallery WHERE id = ?", [+pictureID]);
+
+        console.log("Single Image: ", rows)
+
+        if(!rows.length) return res.status(404).json({message: `Memory with id ${pictureID} doesn't exist`});
+
         res.status(200).json(rows);
     }
     catch(error){
@@ -43,9 +53,6 @@ const postOneImage = async (req, res, next) => {
 
     const { filename } = req.file;
     const { user_id, title, description } = req.body;
-
-    console.log("req.file", req.file);
-    console.log("user_id", user_id);
 
     try{
         const [result] = await database.execute("INSERT INTO gallery (user_id, url_path, title, description) VALUES (?, ?, ?, ?)", [+user_id, filename, title, description]);

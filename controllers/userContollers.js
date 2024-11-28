@@ -35,12 +35,20 @@ const signup = async (req, res, next) => {
             { expiresIn: "1h" }
         );
 
-        res.status(201).cookie("access_token", token, { httpOnly: true }).json({message: "user created successfully!", user: { user_id: result.insertId,  user_fullname: `${first_name} ${last_name}`}});
+
+        res.cookie("access_token", token, { 
+            httpOnly: true, 
+            // secure: false, 
+            // sameSite: "lax" 
+        });
+
+        res.status(201).json({message: "user created successfully!", user: { user_id: result.insertId,  user_fullname: `${first_name} ${last_name}`}});
 
     }
     catch(error){
         console.log(error);
-        res.status(500).json({error: "Internal Server Error"});
+        res.status(500).json({error: error.message || error.error || "Internal Server Error"}); 
+
     }
 }
 
@@ -53,11 +61,11 @@ const login = async (req, res, next) => {
     try{
         // make sure Email exists in the Database
         const [rows] = await database.execute("SELECT * FROM users WHERE email = ?", [email]);
-        if(!rows.length) return res.status(401).json({error: "Email doesn't exist in our database!"});
+        if(!rows.length) return res.status(404).json({error: "Email not found in the database!"});
 
         //compare passed password with the one in the Database
-        const correctPassword = await bcrypt.compare(password, rows[0].password);
-        if(!correctPassword) return res.status(401).json({error: "Invalid password!"});
+        const isCorrectPassword = await bcrypt.compare(password, rows[0].password);
+        if(!isCorrectPassword) return res.status(401).json({error: "Invalid password!"});
         
         const user_fullname = `${rows[0].first_name} ${rows[0].last_name}`;
 
@@ -71,16 +79,35 @@ const login = async (req, res, next) => {
             { expiresIn: "1h" }
         );
 
-        res.cookie("access_token", token, { httpOnly: true }).json({message: "Logged in successfully!", user: { user_id: rows[0].id , user_fullname}});
+        res.cookie("access_token", token, { 
+            httpOnly: true, 
+            // secure: false, 
+            // sameSite: "lax" 
+        });
+        res.json({message: "Logged in successfully!", user: { user_id: rows[0].id , user_fullname}});
     }
     catch(error){
         console.log(error);
-        res.status(500).json({error: "Internal Server Error"}); 
+        res.status(500).json({error: error.message || error.error || "Internal Server Error"}); 
     }
 }
 
 
 
 
+const logout = async (req, res, next) => {
 
-module.exports = { signup, login }
+    try{
+        res.clearCookie("access_token", {httpOnly: true});
+        res.status(200).json({message: "Logged out"});
+    }
+    catch(error){
+        console.log(error);
+        res.status(500).json({error: error.message || error.error || "Internal Server Error"}); 
+    }
+}
+
+
+
+
+module.exports = { signup, login, logout }
