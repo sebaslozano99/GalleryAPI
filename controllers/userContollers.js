@@ -5,6 +5,22 @@ require("dotenv").config();
 
 
 
+const verifyToken = async (req, res) => {
+    const { access_token } = req.cookies;
+
+    if(!access_token) return res.status(401).json({message: "Unathorized!"});
+
+    jwt.verify(access_token, process.env.JWT_SECRET_KEY, (err, user) => {
+        if(err) return res.status(401).json({message: "Unauthorized!"});
+
+        return res.json(user);
+    });
+}
+
+
+
+
+
 const signup = async (req, res, next) => {
 
     const { first_name, last_name, email, password } = req.body;
@@ -36,12 +52,7 @@ const signup = async (req, res, next) => {
         );
 
 
-        res.cookie("access_token", token, { 
-            httpOnly: true, 
-            // secure: false, 
-            // sameSite: "lax" 
-        });
-
+        res.cookie("access_token", token, { httpOnly: true });
         res.status(201).json({message: "user created successfully!", user: { user_id: result.insertId,  user_fullname: `${first_name} ${last_name}`}});
 
     }
@@ -79,11 +90,7 @@ const login = async (req, res, next) => {
             { expiresIn: "1h" }
         );
 
-        res.cookie("access_token", token, { 
-            httpOnly: true, 
-            // secure: false, 
-            // sameSite: "lax" 
-        });
+        res.cookie("access_token", token, { httpOnly: true });
         res.json({message: "Logged in successfully!", user: { user_id: rows[0].id , user_fullname}});
     }
     catch(error){
@@ -98,7 +105,7 @@ const login = async (req, res, next) => {
 const logout = async (req, res, next) => {
 
     try{
-        res.clearCookie("access_token", {httpOnly: true});
+        res.clearCookie("access_token");
         res.status(200).json({message: "Logged out"});
     }
     catch(error){
@@ -110,4 +117,4 @@ const logout = async (req, res, next) => {
 
 
 
-module.exports = { signup, login, logout }
+module.exports = { signup, login, logout, verifyToken }

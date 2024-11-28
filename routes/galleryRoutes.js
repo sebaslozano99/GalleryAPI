@@ -8,7 +8,7 @@ const galleryRoute = express.Router();
 
 
 //the param :userID will be assign in the fronted 
-galleryRoute.get("/gallery/:userID", showGallery);
+galleryRoute.get("/gallery/:userID", validateToken, showGallery);
 galleryRoute.get("/gallery/:userID/:pictureID", getSinglePicture);
 galleryRoute.post("/gallery", upload.single("picture"), postOneImage);
 galleryRoute.delete("/gallery/:pictureID", deleteOneImage);

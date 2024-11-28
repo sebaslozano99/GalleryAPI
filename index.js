@@ -14,11 +14,11 @@ const app = express();
 
 
 //MIDDLEWARES
-app.use(cors());
-app.use(cookieParser());
+app.use(cors({origin: "http://localhost:5173", credentials: true}));
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(express.static("uploads")); //allow access to the Fronted to all the pictures saved inside 'uploads' folder
+app.use(cookieParser());
 
 
 //ROUTES
