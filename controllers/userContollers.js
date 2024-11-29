@@ -4,11 +4,11 @@ const bcrypt = require("bcrypt");
 require("dotenv").config();
 
 
-
+//In the fronted, on the initial page load, the fronted will fetch this endpoint, to get verify there is a token, and if there is one, it'll return the user's information that was encoded in the token
 const verifyToken = async (req, res) => {
     const { access_token } = req.cookies;
 
-    if(!access_token) return res.status(401).json({message: "Unathorized!"});
+    if(!access_token) return res.status(401).json({message: "Unathorized or expired token!"});
 
     jwt.verify(access_token, process.env.JWT_SECRET_KEY, (err, user) => {
         if(err) return res.status(401).json({message: "Unauthorized!"});

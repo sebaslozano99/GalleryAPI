@@ -10,8 +10,6 @@ const showGallery = async (req, res, next) => {
     try{
         const [rows] = await database.execute("SELECT * FROM gallery WHERE user_id = ?", [userID]);
 
-        if(!rows.length) return res.status(404).json({message: `User with id ${userID} doesn't exist`});
-
         res.status(200).json(rows);
     }
     catch(error){
@@ -32,7 +30,7 @@ const getSinglePicture = async (req, res, next) => {
     try{
         const [rows] = await database.execute("SELECT * FROM gallery WHERE id = ?", [+pictureID]);
 
-        console.log("Single Image: ", rows)
+        // console.log("Single Image: ", rows)
 
         if(!rows.length) return res.status(404).json({message: `Memory with id ${pictureID} doesn't exist`});
 
@@ -54,9 +52,11 @@ const postOneImage = async (req, res, next) => {
     const { filename } = req.file;
     const { user_id, title, description } = req.body;
 
+    console.log(req.file);
+
     try{
         const [result] = await database.execute("INSERT INTO gallery (user_id, url_path, title, description) VALUES (?, ?, ?, ?)", [+user_id, filename, title, description]);
-        console.log("POST result: ", result);
+        // console.log("POST result: ", result);
         res.status(200).json({"message": "new photo added!"});
     }
     catch(error){

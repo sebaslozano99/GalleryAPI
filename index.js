@@ -20,6 +20,9 @@ app.use(express.urlencoded({extended: true}));
 app.use(express.static("uploads")); //allow access to the Fronted to all the pictures saved inside 'uploads' folder
 app.use(cookieParser());
 
+// Error handling middleware
+
+
 
 //ROUTES
 app.use("/api/auth", userRoute);
